@@ -1,17 +1,28 @@
 import React from 'react';
 import TasksList from './TasksList';
+import axios from 'axios';
 
 class App extends React.Component {
 
   state = {
-    tasks: {},
-    completed: {}
+    tasks: {}
   };
 
-  addTask = (task) => {
-    const tasks = {...this.state.tasks};
-    
+  // going to Add Task Page
+  goToAddTask = (event) => {
+    event.preventDefault();
+    this.props.history.push('/add-task');
+  }
 
+  componentDidMount() {
+    axios.get('http://todo.local/tasks/list')
+      .then((response) => {
+        this.setState({ tasks:response.data });
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   render() {
@@ -19,7 +30,7 @@ class App extends React.Component {
       <div>
         <h1>To-Do List</h1>
 
-        <button>+ Add Task</button>
+        <button onClick={this.goToAddTask}>+ Add Task</button>
 
         <TasksList componentTitle="Backlogs"/>
 

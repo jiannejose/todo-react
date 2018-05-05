@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 class AddTask extends React.Component {
 
@@ -9,10 +10,18 @@ class AddTask extends React.Component {
   saveTask = (event) => {
     event.preventDefault();
 
-    const task = {
-      name: this.nameRef.value.value,
-    }
-    
+    const task = new FormData();
+    task.append('title', this.nameRef.current.value);
+    task.append('details', this.detailsRef.current.value);
+    task.append('deadline_at', this.deadlineRef.current.value);
+
+    axios.post('http://todo.local/tasks/create', task)
+      .then((response) => {
+        this.props.history.push('/');
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   render() {
@@ -20,9 +29,9 @@ class AddTask extends React.Component {
       <div>
         <h2>Adding Task</h2>
 
-        <form action="post" onSubmit={this.saveTask}>
+        <form onSubmit={this.saveTask}>
           <label htmlFor="task_name">Task Name</label> <br/>
-          <input type="text" name="task_name" placeholder="Task Name" ref={this.nameRef}/> <br/>
+          <input type="text" ref={this.nameRef} name="task_name" placeholder="Task Name" /> <br/>
 
           <br/>
           <br/>
